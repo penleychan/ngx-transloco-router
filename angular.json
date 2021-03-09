@@ -36,7 +36,7 @@
       "projectType": "application",
       "root": "apps/ngx-transloco-route-demo",
       "sourceRoot": "apps/ngx-transloco-route-demo/src",
-      "prefix": "penleychan",
+      "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -144,6 +144,43 @@
             "lintFilePatterns": [
               "apps/ngx-transloco-route-demo-e2e/**/*.{js,ts}"
             ]
+          }
+        }
+      }
+    },
+    "ngx-transloco-router": {
+      "projectType": "library",
+      "root": "libs/ngx-transloco-router",
+      "sourceRoot": "libs/ngx-transloco-router/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/angular:package",
+          "options": {
+            "tsConfig": "libs/ngx-transloco-router/tsconfig.lib.json",
+            "project": "libs/ngx-transloco-router/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/ngx-transloco-router/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/ngx-transloco-router/src/**/*.ts",
+              "libs/ngx-transloco-router/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ngx-transloco-router"],
+          "options": {
+            "jestConfig": "libs/ngx-transloco-router/jest.config.js",
+            "passWithNoTests": true
           }
         }
       }
