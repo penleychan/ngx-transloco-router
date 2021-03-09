@@ -11,6 +11,5 @@ export class ChildrenComponent implements OnInit {
   constructor(private translocoService: TranslocoService) { }
 
   ngOnInit(): void {
-    this.translocoService.load('en').subscribe((t) => console.log('child', t));
   }
 }

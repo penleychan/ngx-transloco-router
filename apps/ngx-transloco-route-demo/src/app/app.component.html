@@ -3,11 +3,13 @@
 <a href="javascript:void(0)" (click)="switchLang('fr')">FRA</a>
 <br>
 
-<a [routerLink]="['child'] | localize">Child LazyLoaded</a>
+<a [routerLink]="['/child'] | localize">Child LazyLoaded</a>
 <br>
 <br>
 <ng-container *transloco="let t">
-  <a [routerLink]="['greetings'] | localize">{{t('greetings')}}</a>
+  <a [routerLink]="['/greetings'] | localize">{{t('greetings')}}</a>
+  <br>
+  <a [routerLink]="['/asdf'] | localize">BAD PAGE</a>
 </ng-container>
 
 <router-outlet></router-outlet>

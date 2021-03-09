@@ -1,3 +1,7 @@
 ﻿{
-  "greetings": "Hello en"
+  "greetings": "Hello en",
+  "ROUTES": {
+    "greetings": "greet-en",
+    "child": "child-en"
+  }
 }

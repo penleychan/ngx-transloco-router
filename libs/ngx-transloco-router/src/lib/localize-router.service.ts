@@ -1,4 +1,4 @@
-﻿import { Inject, Injectable } from '@angular/core';
+﻿import {Inject, Injectable} from '@angular/core';
 // import { Location } from '@angular/common';
 import {
   Router, NavigationStart, ActivatedRouteSnapshot, NavigationExtras, ActivatedRoute,
@@ -8,7 +8,7 @@ import { Subject, Observable, ReplaySubject } from 'rxjs';
 import { filter, pairwise } from 'rxjs/operators';
 
 import { LocalizeParser } from './localize-router.parser';
-import { LocalizeRouterSettings } from './localize-router.config';
+import {LocalizeRouterSettings} from './localize-router.config';
 import { LocalizedMatcherUrlSegment } from './localized-matcher-url-segment';
 import { deepCopy } from './util';
 
@@ -35,8 +35,8 @@ export class LocalizeRouterService {
     @Inject(LocalizeParser) public parser: LocalizeParser,
     @Inject(LocalizeRouterSettings) public settings: LocalizeRouterSettings,
     @Inject(Router) private router: Router,
-    @Inject(ActivatedRoute) private route: ActivatedRoute/*,
-      @Inject(Location) private location: Location*/
+    @Inject(ActivatedRoute) private route: ActivatedRoute
+    /*@Inject(Location) private location: Location*/
   ) {
     this.routerEvents = new Subject<string>();
     const initializedSubject = new ReplaySubject<boolean>(1);

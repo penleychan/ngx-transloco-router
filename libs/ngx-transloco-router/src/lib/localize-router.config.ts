@@ -1,7 +1,6 @@
-﻿import { Inject, InjectionToken, Provider, Injectable, Optional } from '@angular/core';
+﻿import { Inject, InjectionToken, Provider, Injectable } from '@angular/core';
 import { Routes } from '@angular/router';
 import { LocalizeRouterModule } from './localize-router.module';
-import {AvailableLangs} from "@ngneat/transloco";
 
 /**
  * Guard to make sure we have single initialization of forRoot
@@ -70,6 +69,7 @@ export const ALWAYS_SET_PREFIX = new InjectionToken<boolean>('ALWAYS_SET_PREFIX'
  */
 export interface LocalizeRouterConfig {
   parser?: Provider;
+  translateRoute?: boolean;
   useCachedLang?: boolean;
   cacheMechanism?: CacheMechanism;
   cacheName?: string;

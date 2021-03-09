@@ -9,10 +9,9 @@ import {
   SkipSelf,
   Optional
 } from '@angular/core';
-import { CommonModule, Location } from '@angular/common';
+import {CommonModule, Location} from '@angular/common';
 import {DummyLocalizeParser, LocalizeParser} from "./localize-router.parser";
 import {
-  ActivatedRoute,
   ChildrenOutletContexts,
   Router,
   ROUTER_CONFIGURATION,
@@ -23,22 +22,30 @@ import {
 } from "@angular/router";
 import {LocalizeRouterService} from "./localize-router.service";
 import {
-  ALWAYS_SET_PREFIX, CACHE_MECHANISM, CACHE_NAME, COOKIE_FORMAT, DEFAULT_LANG_FUNCTION, INITIAL_NAVIGATION,
+  ALWAYS_SET_PREFIX,
+  CACHE_MECHANISM,
+  CACHE_NAME,
+  COOKIE_FORMAT,
+  DEFAULT_LANG_FUNCTION,
+  INITIAL_NAVIGATION,
   LOCALIZE_ROUTER_FORROOT_GUARD,
   LocalizeRouterConfig,
   LocalizeRouterSettings,
-  RAW_ROUTES, TRANSLATE_ROUTE, USE_CACHED_LANG
+  RAW_ROUTES,
+  TRANSLATE_ROUTE,
+  USE_CACHED_LANG
 } from "./localize-router.config";
 import {deepCopy} from "./util";
 import {GilsdavReuseStrategy} from "./gilsdav-reuse-strategy";
 import {setupRouter} from "./localized-router";
-import {TranslocoModule} from "@ngneat/transloco";
+import {TRANSLOCO_SCOPE, TranslocoModule} from "@ngneat/transloco";
 import {LocalizeRouterPipe} from "./localize-router.pipe";
 
 @Injectable()
 export class ParserInitializer {
   parser: LocalizeParser;
   routes: Routes;
+
   /**
    * CTOR
    */
@@ -115,16 +122,16 @@ export class LocalizeRouterModule {
           useFactory: provideForRootGuard,
           deps: [[LocalizeRouterModule, new Optional(), new SkipSelf()]]
         },
-        { provide: TRANSLATE_ROUTE, useValue: false },
-        { provide: USE_CACHED_LANG, useValue: config.useCachedLang },
-        { provide: ALWAYS_SET_PREFIX, useValue: config.alwaysSetPrefix },
-        { provide: CACHE_NAME, useValue: config.cacheName },
-        { provide: CACHE_MECHANISM, useValue: config.cacheMechanism },
-        { provide: DEFAULT_LANG_FUNCTION, useValue: config.defaultLangFunction },
-        { provide: COOKIE_FORMAT, useValue: config.cookieFormat },
-        { provide: INITIAL_NAVIGATION, useValue: config.initialNavigation },
+        {provide: TRANSLATE_ROUTE, useValue: config.translateRoute},
+        {provide: USE_CACHED_LANG, useValue: config.useCachedLang},
+        {provide: ALWAYS_SET_PREFIX, useValue: config.alwaysSetPrefix},
+        {provide: CACHE_NAME, useValue: config.cacheName},
+        {provide: CACHE_MECHANISM, useValue: config.cacheMechanism},
+        {provide: DEFAULT_LANG_FUNCTION, useValue: config.defaultLangFunction},
+        {provide: COOKIE_FORMAT, useValue: config.cookieFormat},
+        {provide: INITIAL_NAVIGATION, useValue: config.initialNavigation},
         LocalizeRouterSettings,
-        config.parser || { provide: LocalizeParser, useClass: DummyLocalizeParser },
+        config.parser || {provide: LocalizeParser, useClass: DummyLocalizeParser},
         {
           provide: RAW_ROUTES,
           multi: true,

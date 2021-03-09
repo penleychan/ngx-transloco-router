@@ -1,10 +1,10 @@
-﻿import {Routes, Route, NavigationExtras, Params, ActivatedRoute} from '@angular/router';
+﻿import {Routes, Route, NavigationExtras, Params} from '@angular/router';
 import {Observable, Observer} from 'rxjs';
 import {Location} from '@angular/common';
 import {CacheMechanism, LocalizeRouterSettings} from './localize-router.config';
 import {Inject, Injectable} from '@angular/core';
 import {HttpParams} from '@angular/common/http';
-import {getBrowserLang, TranslocoService} from "@ngneat/transloco";
+import {flatten, getBrowserLang, TranslocoService} from "@ngneat/transloco";
 
 const COOKIE_EXPIRY = 30; // 1 month
 
@@ -17,6 +17,7 @@ export abstract class LocalizeParser {
   currentLang: string;
   routes: Routes;
   defaultLang: string;
+  scope: string;
 
   protected prefix: string;
   protected escapePrefix: string;
@@ -32,7 +33,7 @@ export abstract class LocalizeParser {
               @Inject(Location) private location: Location,
               @Inject(LocalizeRouterSettings) private settings: LocalizeRouterSettings) {
 
-    this.prefix = this.prefix || '';
+    this.prefix = this.prefix ?? 'ROUTES.';
     this.locales = translate.getAvailableLangs() as string[];
   }
 
@@ -149,8 +150,6 @@ export abstract class LocalizeParser {
       this.translate.load(language).subscribe((translations: any) => {
         this._translationObject = translations;
         this.currentLang = language;
-
-        console.log(this._translationObject);
 
         if (this._languageRoute) {
           if (this._languageRoute) {
@@ -375,8 +374,17 @@ export abstract class LocalizeParser {
       }
 
       if (this.settings.translateRoute) {
-        const res = this.translate.translate(key, {}, this.currentLang);
-        return res !== key ? res : key;
+        const flattenTranslationObject = flatten(this._translationObject);
+        const fullKey = this.prefix + key;
+
+        const translationExists = Object.keys(flattenTranslationObject).find(key => key === fullKey);
+
+        if(translationExists) {
+          const res = this.translate.translate(fullKey, {}, this.currentLang);
+          return res !== fullKey ? res : key;
+        }
+
+        return key;
       }
       return key;
     }
@@ -455,3 +463,4 @@ export class DummyLocalizeParser extends LocalizeParser {
     });
   }
 }
+
