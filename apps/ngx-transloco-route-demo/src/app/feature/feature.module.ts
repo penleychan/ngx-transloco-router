@@ -27,7 +27,7 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     TranslocoModule,
-    LocalizeRouterModule.forChild(routes)
+    LocalizeRouterModule.forChild(routes),
   ],
   providers: [
     {

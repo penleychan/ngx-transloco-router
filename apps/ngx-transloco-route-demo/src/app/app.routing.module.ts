@@ -1,8 +1,12 @@
 ﻿import {NgModule} from "@angular/core";
 import {RouterModule, Routes} from "@angular/router";
-import {LocalizeRouterModule} from "../../../../libs/ngx-transloco-router/src/lib/localize-router.module";
 import {GreetingsComponent} from "./greetings/greetings.component";
 import {NotFoundComponent} from "./not-found/not-found.component";
+import {
+  LOCALIZE_ROUTER_CONFIG,
+  localizeRouterConfig
+} from "../../../../libs/ngx-transloco-router/src/lib/localize-router.config";
+import {LocalizeRouterModule} from "@penleychan/ngx-transloco-router";
 
 const routes: Routes = [
   {
@@ -13,8 +17,12 @@ const routes: Routes = [
     }
   },
   {
-    path: 'child',
+    path: '!child',
     loadChildren: () => import('./feature/feature.module').then(mod => mod.FeatureModule)
+  },
+  {
+    path: '!help/testa',
+    loadChildren: () => import('./core/core.module').then(mod => mod.CoreModule)
   },
   { path: '404', component: NotFoundComponent },
   { path: '**', redirectTo: '/404' }
@@ -23,11 +31,17 @@ const routes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forRoot(routes),
-    LocalizeRouterModule.forRoot(routes, {
-      translateRoute: true
-    })
+    LocalizeRouterModule.forRoot(routes)
   ],
-  exports: [RouterModule, LocalizeRouterModule]
+  exports: [RouterModule, LocalizeRouterModule],
+  providers: [
+    {
+      provide: LOCALIZE_ROUTER_CONFIG,
+      useValue: localizeRouterConfig({
+        translateRoute: true,
+      })
+    }
+  ]
 })
 export class AppRoutingModule {
 }

@@ -10,6 +10,7 @@ import { from, of, isObservable, Observable } from 'rxjs';
 import { mergeMap, map } from 'rxjs/operators';
 import { isPromise } from './util';
 import { LocalizeParser } from './localize-router.parser';
+import {TranslocoScope} from "@ngneat/transloco";
 
 export class LocalizedRouter extends Router {
   constructor(
@@ -68,10 +69,19 @@ export class LocalizedRouter extends Router {
   }
 }
 export function setupRouter(
-  ref: ApplicationRef, urlSerializer: UrlSerializer, contexts: ChildrenOutletContexts,
-  location: Location, injector: Injector, loader: NgModuleFactoryLoader, compiler: Compiler,
-  config: Route[][], localize: LocalizeParser, opts: ExtraOptions = {}, urlHandlingStrategy?: UrlHandlingStrategy,
-  routeReuseStrategy?: RouteReuseStrategy) {
+  ref: ApplicationRef,
+  urlSerializer: UrlSerializer,
+  contexts: ChildrenOutletContexts,
+  location: Location,
+  injector: Injector,
+  loader: NgModuleFactoryLoader,
+  compiler: Compiler,
+  config: Route[][],
+  localize: LocalizeParser,
+  opts: ExtraOptions = {},
+  urlHandlingStrategy?: UrlHandlingStrategy,
+  routeReuseStrategy?: RouteReuseStrategy
+) {
   const router = new LocalizedRouter(
     null, urlSerializer, contexts, location, injector, loader, compiler, flatten(config), localize);
 

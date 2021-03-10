@@ -1,17 +1,23 @@
 ﻿import {Routes, Route, NavigationExtras, Params} from '@angular/router';
-import {Observable, Observer} from 'rxjs';
+import {Observable, Observer, of} from 'rxjs';
 import {Location} from '@angular/common';
-import {CacheMechanism, LocalizeRouterSettings} from './localize-router.config';
-import {Inject, Injectable} from '@angular/core';
+import {
+  CacheMechanism,
+  LOCALIZE_ROUTER_CONFIG,
+  LocalizeRouterConfig,
+} from './localize-router.config';
+import {Inject, Injectable, Optional} from '@angular/core';
 import {HttpParams} from '@angular/common/http';
-import {flatten, getBrowserLang, TranslocoService} from "@ngneat/transloco";
+import {flatten, getBrowserLang, TRANSLOCO_SCOPE, TranslocoScope, TranslocoService} from "@ngneat/transloco";
 
 const COOKIE_EXPIRY = 30; // 1 month
 
 /**
  * Abstract class for parsing localization
  */
-@Injectable()
+@Injectable({
+  providedIn: "root"
+})
 export abstract class LocalizeParser {
   locales: string[];
   currentLang: string;
@@ -29,12 +35,9 @@ export abstract class LocalizeParser {
   /**
    * Loader constructor
    */
-  constructor(@Inject(TranslocoService) public translate: TranslocoService,
+  protected constructor(@Inject(TranslocoService) public translate: TranslocoService,
               @Inject(Location) private location: Location,
-              @Inject(LocalizeRouterSettings) private settings: LocalizeRouterSettings) {
-
-    this.prefix = this.prefix ?? 'ROUTES.';
-    this.locales = translate.getAvailableLangs() as string[];
+              @Inject(LOCALIZE_ROUTER_CONFIG) private settings: LocalizeRouterConfig) {
   }
 
   /**
@@ -374,9 +377,9 @@ export abstract class LocalizeParser {
       }
 
       if (this.settings.translateRoute) {
-        const flattenTranslationObject = flatten(this._translationObject);
-        const fullKey = this.prefix + key;
+        const flattenTranslationObject = flatten(this.translate.getTranslation(this.currentLang));
 
+        const fullKey = this.prefix + key;
         const translationExists = Object.keys(flattenTranslationObject).find(key => key === fullKey);
 
         if(translationExists) {
@@ -429,38 +432,22 @@ export abstract class LocalizeParser {
   }
 }
 
-/**
- * Manually set configuration
- */
-export class ManualParserLoader extends LocalizeParser {
+@Injectable({
+  providedIn: "root"
+})
+export class DefaultLocalizeParser extends LocalizeParser {
 
-  /**
-   * CTOR
-   */
-  constructor(translate: TranslocoService, location: Location, settings: LocalizeRouterSettings,
-              locales: string[] = ['en'], prefix: string = 'ROUTES.', escapePrefix: string = '') {
-    super(translate, location, settings);
-    this.locales = locales;
-    this.prefix = prefix || '';
-    this.escapePrefix = escapePrefix || '';
+  constructor(translate: TranslocoService, location: Location, @Optional() @Inject(LOCALIZE_ROUTER_CONFIG) localizeRouterConfig?: LocalizeRouterConfig) {
+    super(translate, location, localizeRouterConfig);
+    this.locales = translate.getAvailableLangs() as string[];
+    this.prefix = localizeRouterConfig.prefix;
+    this.escapePrefix = localizeRouterConfig.escapePrefix;
   }
 
-  /**
-   * Initialize or append routes
-   */
-  load(routes: Routes): Promise<any> {
+    load(routes: Routes): Promise<any> {
     return new Promise((resolve: any) => {
       this.init(routes).then(resolve);
     });
   }
-}
 
-@Injectable()
-export class DummyLocalizeParser extends LocalizeParser {
-  load(routes: Routes): Promise<any> {
-    return new Promise((resolve: any) => {
-      this.init(routes).then(resolve);
-    });
-  }
 }
-
