@@ -2,3 +2,7 @@
   <h1> {{ t('features.title') }} </h1>
   <h1> {{ t('greetings') }} </h1>
 </ng-container>
+
+<a [routerLink]="['test'] | localize">Test Page</a>
+
+<router-outlet></router-outlet>

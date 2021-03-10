@@ -16,8 +16,6 @@ import { NotFoundComponent } from './not-found/not-found.component';
     TranslocoRootModule,
     AppRoutingModule
   ],
-  providers: [
-  ],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}

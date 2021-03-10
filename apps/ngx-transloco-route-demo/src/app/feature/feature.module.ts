@@ -5,17 +5,24 @@ import {TRANSLOCO_SCOPE, TranslocoModule} from "@ngneat/transloco";
 import {RouterModule, Routes} from "@angular/router";
 import {loader} from "../../scoped-translations";
 import {LocalizeRouterModule} from "../../../../../libs/ngx-transloco-router/src/lib/localize-router.module";
+import { TestComponent } from './test/test.component';
 
 
 const routes: Routes = [
   {
     path: '',
-    component: ChildrenComponent
+    component: ChildrenComponent,
+    children: [
+      {
+        path: 'test',
+        component: TestComponent
+      }
+    ]
   },
 ];
 
 @NgModule({
-  declarations: [ChildrenComponent],
+  declarations: [ChildrenComponent, TestComponent],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),

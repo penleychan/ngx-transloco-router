@@ -1,3 +1,6 @@
 ﻿{
-  "title": "Hello from feature lazy loaded (SCOPED) FR"
+  "title": "Hello from feature lazy loaded (SCOPED) FR",
+  "test": {
+    "title": "TestComponent FR"
+  }
 }

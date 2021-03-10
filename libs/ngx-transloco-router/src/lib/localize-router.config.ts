@@ -1,6 +1,8 @@
-﻿import { Inject, InjectionToken, Provider, Injectable } from '@angular/core';
+﻿import {Inject, InjectionToken, Provider, Injectable, Optional} from '@angular/core';
 import { Routes } from '@angular/router';
 import { LocalizeRouterModule } from './localize-router.module';
+import {BehaviorSubject, Observable} from "rxjs";
+import {TRANSLOCO_SCOPE, TranslocoScope} from "@ngneat/transloco";
 
 /**
  * Guard to make sure we have single initialization of forRoot
@@ -107,3 +109,4 @@ export class LocalizeRouterSettings implements LocalizeRouterConfig {
   }
 
 }
+
