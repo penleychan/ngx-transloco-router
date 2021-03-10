@@ -201,8 +201,6 @@ export class LocalizeRouterService {
    * If new language is explicitly provided then replace language part in url with new language
    */
   translateRoute(path: string | any[]): string | any[] {
-    console.log(path);
-
     if (typeof path === 'string') {
       const url = this.parser.translateRoute(path);
       return !path.indexOf('/') ? this.parser.addPrefixToUrl(url) : url;

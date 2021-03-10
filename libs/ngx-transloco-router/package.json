@@ -1,6 +1,6 @@
 {
   "name": "@penleychan/ngx-transloco-router",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "private": false,
   "description": "Routing Localization extension for transloco",
   "keywords": ["transloco", "localization", "angular"],
