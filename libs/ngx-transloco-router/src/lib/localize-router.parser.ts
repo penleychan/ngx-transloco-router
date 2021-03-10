@@ -376,6 +376,10 @@ export abstract class LocalizeParser {
         return key;
       }
 
+      // if (key.startsWith(":") || key.startsWith("http") || key === "**") {
+      //   return key;
+      // }
+
       if (this.settings.translateRoute) {
         const flattenTranslationObject = flatten(this.translate.getTranslation(this.currentLang));
 

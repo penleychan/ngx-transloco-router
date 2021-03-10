@@ -14,7 +14,7 @@ const routes: Routes = [
     component: ChildrenComponent,
     children: [
       {
-        path: 'test',
+        path: 'test/:id',
         component: TestComponent
       }
     ]
