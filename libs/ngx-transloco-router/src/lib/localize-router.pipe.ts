@@ -1,7 +1,7 @@
-﻿import { PipeTransform, Pipe, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { LocalizeRouterService } from './localize-router.service';
-import { Subscription } from 'rxjs';
-import { equals } from './util';
+﻿import {PipeTransform, Pipe, ChangeDetectorRef, OnDestroy} from '@angular/core';
+import {LocalizeRouterService} from './localize-router.service';
+import {Subscription} from 'rxjs';
+import {equals} from './util';
 
 const VIEW_DESTROYED_STATE = 128;
 

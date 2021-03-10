@@ -8,7 +8,7 @@ import {
 } from './localize-router.config';
 import {Inject, Injectable, Optional} from '@angular/core';
 import {HttpParams} from '@angular/common/http';
-import {flatten, getBrowserLang, TRANSLOCO_SCOPE, TranslocoScope, TranslocoService} from "@ngneat/transloco";
+import {flatten, getBrowserLang, TranslocoService} from "@ngneat/transloco";
 
 const COOKIE_EXPIRY = 30; // 1 month
 
@@ -36,8 +36,8 @@ export abstract class LocalizeParser {
    * Loader constructor
    */
   protected constructor(@Inject(TranslocoService) public translate: TranslocoService,
-              @Inject(Location) private location: Location,
-              @Inject(LOCALIZE_ROUTER_CONFIG) private settings: LocalizeRouterConfig) {
+                        @Inject(Location) private location: Location,
+                        @Inject(LOCALIZE_ROUTER_CONFIG) private settings: LocalizeRouterConfig) {
   }
 
   /**
@@ -382,7 +382,7 @@ export abstract class LocalizeParser {
         const fullKey = this.prefix + key;
         const translationExists = Object.keys(flattenTranslationObject).find(key => key === fullKey);
 
-        if(translationExists) {
+        if (translationExists) {
           const res = this.translate.translate(fullKey, {}, this.currentLang);
           return res !== fullKey ? res : key;
         }
@@ -444,7 +444,7 @@ export class DefaultLocalizeParser extends LocalizeParser {
     this.escapePrefix = localizeRouterConfig.escapePrefix;
   }
 
-    load(routes: Routes): Promise<any> {
+  load(routes: Routes): Promise<any> {
     return new Promise((resolve: any) => {
       this.init(routes).then(resolve);
     });

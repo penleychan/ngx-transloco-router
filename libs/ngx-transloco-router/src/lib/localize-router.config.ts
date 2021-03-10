@@ -1,6 +1,6 @@
-﻿import { InjectionToken, Provider} from '@angular/core';
-import { Routes } from '@angular/router';
-import { LocalizeRouterModule } from './localize-router.module';
+﻿import {InjectionToken, Provider} from '@angular/core';
+import {Routes} from '@angular/router';
+import {LocalizeRouterModule} from './localize-router.module';
 
 /**
  * Guard to make sure we have single initialization of forRoot

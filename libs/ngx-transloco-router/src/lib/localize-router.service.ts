@@ -3,13 +3,13 @@ import {
   Router, NavigationStart, ActivatedRouteSnapshot, NavigationExtras, ActivatedRoute,
   Event, NavigationCancel, Routes
 } from '@angular/router';
-import { Subject, Observable, ReplaySubject } from 'rxjs';
-import { filter, pairwise } from 'rxjs/operators';
+import {Subject, Observable, ReplaySubject} from 'rxjs';
+import {filter, pairwise} from 'rxjs/operators';
 
-import { LocalizeParser } from './localize-router.parser';
+import {LocalizeParser} from './localize-router.parser';
 import {LOCALIZE_ROUTER_CONFIG, LocalizeRouterConfig} from './localize-router.config';
-import { LocalizedMatcherUrlSegment } from './localized-matcher-url-segment';
-import { deepCopy } from './util';
+import {LocalizedMatcherUrlSegment} from './localized-matcher-url-segment';
+import {deepCopy} from './util';
 
 /**
  * Localization service
@@ -184,7 +184,7 @@ export class LocalizeRouterService {
   }
 
   private parseSegmentValueMatcher(snapshot: ActivatedRouteSnapshot): string[] {
-    const localizeMatcherParams = snapshot.data && snapshot.data.localizeMatcher && snapshot.data.localizeMatcher.params || { };
+    const localizeMatcherParams = snapshot.data && snapshot.data.localizeMatcher && snapshot.data.localizeMatcher.params || {};
     const subPathSegments: string[] = snapshot.url
       .map((segment: LocalizedMatcherUrlSegment) => {
         const currentPath = segment.path;

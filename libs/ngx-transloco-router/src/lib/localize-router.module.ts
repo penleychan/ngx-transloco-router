@@ -30,7 +30,7 @@ import {
 import {deepCopy} from "./util";
 import {GilsdavReuseStrategy} from "./gilsdav-reuse-strategy";
 import {setupRouter} from "./localized-router";
-import {TRANSLOCO_SCOPE, TranslocoModule, TranslocoService} from "@ngneat/transloco";
+import {TranslocoModule, TranslocoService} from "@ngneat/transloco";
 import {LocalizeRouterPipe} from "./localize-router.pipe";
 
 @Injectable({
@@ -135,7 +135,7 @@ export class LocalizeRouterModule {
             LocalizeParser,
             ROUTER_CONFIGURATION,
             [UrlHandlingStrategy, new Optional()],
-            [RouteReuseStrategy, new Optional() ]
+            [RouteReuseStrategy, new Optional()]
           ]
         },
         {

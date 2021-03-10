@@ -4,7 +4,7 @@ import { ChildrenComponent } from './children/children.component';
 import {TRANSLOCO_SCOPE, TranslocoModule} from "@ngneat/transloco";
 import {RouterModule, Routes} from "@angular/router";
 import {loader} from "../../scoped-translations";
-import {LocalizeRouterModule} from "../../../../../libs/ngx-transloco-router/src/lib/localize-router.module";
+import {LocalizeRouterModule} from "../../../../../libs/ngx-transloco-router/src";
 import { TestComponent } from './test/test.component';
 
 

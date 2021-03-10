@@ -38,7 +38,7 @@ const routes: Routes = [
     {
       provide: LOCALIZE_ROUTER_CONFIG,
       useValue: localizeRouterConfig({
-        translateRoute: true,
+        translateRoute: true
       })
     }
   ]
