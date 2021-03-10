@@ -2,18 +2,26 @@
   Router, UrlSerializer, ChildrenOutletContexts, Routes,
   Route, ExtraOptions, UrlHandlingStrategy, RouteReuseStrategy, RouterEvent, LoadChildren, ROUTES
 } from '@angular/router';
-import { Type, Injector, NgModuleFactoryLoader, Compiler, ApplicationRef, NgModuleFactory, PLATFORM_ID } from '@angular/core';
-import { Location, isPlatformBrowser } from '@angular/common';
-import { flatten } from '@angular/compiler';
-import { ɵgetDOM as getDOM } from '@angular/platform-browser';
-import { from, of, isObservable, Observable } from 'rxjs';
-import { mergeMap, map } from 'rxjs/operators';
-import { isPromise } from './util';
-import { LocalizeParser } from './localize-router.parser';
+import {
+  Type,
+  Injector,
+  NgModuleFactoryLoader,
+  Compiler,
+  ApplicationRef,
+  NgModuleFactory,
+  PLATFORM_ID
+} from '@angular/core';
+import {Location, isPlatformBrowser} from '@angular/common';
+import {flatten} from '@angular/compiler';
+import {ɵgetDOM as getDOM} from '@angular/platform-browser';
+import {from, of, isObservable, Observable} from 'rxjs';
+import {mergeMap, map} from 'rxjs/operators';
+import {isPromise} from './util';
+import {LocalizeParser} from './localize-router.parser';
 
 export class LocalizedRouter extends Router {
   constructor(
-    _rootComponentType: Type<any>|null,
+    _rootComponentType: Type<any> | null,
     _urlSerializer: UrlSerializer,
     _rootContexts: ChildrenOutletContexts,
     _location: Location, injector: Injector,
@@ -21,7 +29,7 @@ export class LocalizedRouter extends Router {
     compiler: Compiler,
     public config: Routes,
     private localize: LocalizeParser
-  ){
+  ) {
     super(_rootComponentType, _urlSerializer, _rootContexts, _location, injector, loader, compiler, config);
     // Custom configuration
     const platformId = injector.get(PLATFORM_ID);
@@ -67,11 +75,21 @@ export class LocalizedRouter extends Router {
     // (this as any).navigations = (this as any).setupNavigations((this as any).transitions);
   }
 }
+
 export function setupRouter(
-  ref: ApplicationRef, urlSerializer: UrlSerializer, contexts: ChildrenOutletContexts,
-  location: Location, injector: Injector, loader: NgModuleFactoryLoader, compiler: Compiler,
-  config: Route[][], localize: LocalizeParser, opts: ExtraOptions = {}, urlHandlingStrategy?: UrlHandlingStrategy,
-  routeReuseStrategy?: RouteReuseStrategy) {
+  ref: ApplicationRef,
+  urlSerializer: UrlSerializer,
+  contexts: ChildrenOutletContexts,
+  location: Location,
+  injector: Injector,
+  loader: NgModuleFactoryLoader,
+  compiler: Compiler,
+  config: Route[][],
+  localize: LocalizeParser,
+  opts: ExtraOptions = {},
+  urlHandlingStrategy?: UrlHandlingStrategy,
+  routeReuseStrategy?: RouteReuseStrategy
+) {
   const router = new LocalizedRouter(
     null, urlSerializer, contexts, location, injector, loader, compiler, flatten(config), localize);
 
@@ -120,7 +138,7 @@ export function setupRouter(
   return router;
 }
 
-export function wrapIntoObservable<T>(value: T | NgModuleFactory<T>| Promise<T>| Observable<T>) {
+export function wrapIntoObservable<T>(value: T | NgModuleFactory<T> | Promise<T> | Observable<T>) {
   if (isObservable(value)) {
     return value;
   }
@@ -132,5 +150,5 @@ export function wrapIntoObservable<T>(value: T | NgModuleFactory<T>| Promise<T>|
     return from(Promise.resolve(value));
   }
 
-  return of (value);
+  return of(value);
 }

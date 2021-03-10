@@ -70,6 +70,6 @@ export class LocalizeNgModuleFactory extends NgModuleFactory<any> {
   }
 }
 
-export function translateModule(moduleType: Type<any>) {
+export function translateModule(moduleType: Type<any>){
   return new LocalizeNgModuleFactory(moduleType);
 }

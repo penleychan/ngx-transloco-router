@@ -16,24 +16,36 @@ Bare minimum setup
     RouterModule.forRoot(routes),
     LocalizeRouterModule.forRoot(routes)
   ],
-  exports: [RouterModule, LocalizeRouterModule]
+  exports: [RouterModule, LocalizeRouterModule],
+  providers: [
+    {
+      provide: LOCALIZE_ROUTER_CONFIG,
+      useValue: localizeRouterConfig()
+    }
+  ]
 })
 export class AppRoutingModule {
 }
 ```
 
 ## Translate Route
-Enable translate route on `LocalizeRouterModule`:
+Enable translate route:
 ```
-LocalizeRouterModule.forRoot(routes, {
-  ...
-  translateRoute: true
-})
+providers: [
+  {
+    provide: LOCALIZE_ROUTER_CONFIG,
+    useValue: localizeRouterConfig({
+      ...
+      translateRoute: true
+    })
+  }
+]
 ```
 
-Currently translate route only works at the root level of your translation files, does not support scope
+Translate route only works at the root level of your translation files, does not support scoping.
 
-In order to get route translated you need to have `ROUTES` on your translation file. For example
+By default the prefix for translating routes is `ROUTES`. In order for translating route to work you need to have `ROUTES`
+on your translation files.
 
 ```
 // en.json
@@ -53,4 +65,33 @@ In order to get route translated you need to have `ROUTES` on your translation f
     "reports": "rapports"
   }
 }
+```
+You can override the prefix by configuration
+```
+providers: [
+  {
+    provide: LOCALIZE_ROUTER_CONFIG,
+    useValue: localizeRouterConfig({
+      ...
+      prefix: 'ROUTE_TRANSLATION.'
+    })
+  }
+]
+```
+
+## LOCALIZE_ROUTER_CONFIG
+These are the configuration settings available and it's defaults
+```
+export const defaultConfig: LocalizeRouterConfig = {
+  translateRoute: false,
+  useCachedLang: true,
+  alwaysSetPrefix: true,
+  cacheMechanism: CacheMechanism.LocalStorage,
+  cacheName: LOCALIZE_CACHE_NAME,
+  defaultLangFunction: void 0,
+  cookieFormat: DEFAULT_COOKIE_FORMAT,
+  initialNavigation: DEFAULT_INITIAL_NAVIGATION,
+  prefix: 'ROUTES.',
+  escapePrefix: '!'
+};
 ```

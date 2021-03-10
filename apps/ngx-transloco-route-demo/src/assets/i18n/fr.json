@@ -3,6 +3,8 @@
   "ROUTES": {
     "greetings": "greet-fr",
     "child": "child-fr",
-    "test": "test-fr"
+    "test": "test-fr",
+    "help": "help-fr",
+    "testa": "testa-fr"
   }
 }

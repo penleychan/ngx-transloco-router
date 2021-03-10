@@ -13,6 +13,6 @@ export class AppComponent {
   }
 
   switchLang(lang: string) {
-    this.localizeRouterService.changeLanguage(lang);
+      this.localizeRouterService.changeLanguage(lang);
   }
 }

@@ -1,1 +1,1 @@
-export * from './lib/ngx-transloco-router.module';
+export * from './lib/localize-router.module';

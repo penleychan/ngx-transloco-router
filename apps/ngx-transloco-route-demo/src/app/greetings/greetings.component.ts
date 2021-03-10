@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import {TranslocoService} from "@ngneat/transloco";
 
 @Component({
   selector: 'penleychan-greetings',
@@ -8,7 +7,7 @@ import {TranslocoService} from "@ngneat/transloco";
 })
 export class GreetingsComponent implements OnInit {
 
-  constructor(private translocoService: TranslocoService) { }
+  constructor() { }
 
   ngOnInit(): void {
   }

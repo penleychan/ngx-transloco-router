@@ -7,10 +7,10 @@ import {
   NgModule,
   NgModuleFactoryLoader,
   SkipSelf,
-  Optional
+  Optional, Provider,
 } from '@angular/core';
 import {CommonModule, Location} from '@angular/common';
-import {DummyLocalizeParser, LocalizeParser} from "./localize-router.parser";
+import {DefaultLocalizeParser, LocalizeParser} from "./localize-router.parser";
 import {
   ChildrenOutletContexts,
   Router,
@@ -22,33 +22,24 @@ import {
 } from "@angular/router";
 import {LocalizeRouterService} from "./localize-router.service";
 import {
-  ALWAYS_SET_PREFIX,
-  CACHE_MECHANISM,
-  CACHE_NAME,
-  COOKIE_FORMAT,
-  DEFAULT_LANG_FUNCTION,
-  INITIAL_NAVIGATION,
+  LOCALIZE_ROUTER_CONFIG,
   LOCALIZE_ROUTER_FORROOT_GUARD,
   LocalizeRouterConfig,
-  LocalizeRouterSettings,
   RAW_ROUTES,
-  TRANSLATE_ROUTE,
-  USE_CACHED_LANG
 } from "./localize-router.config";
 import {deepCopy} from "./util";
 import {GilsdavReuseStrategy} from "./gilsdav-reuse-strategy";
 import {setupRouter} from "./localized-router";
-import {TRANSLOCO_SCOPE, TranslocoModule, TranslocoScope} from "@ngneat/transloco";
+import {TranslocoModule, TranslocoService} from "@ngneat/transloco";
 import {LocalizeRouterPipe} from "./localize-router.pipe";
 
-@Injectable()
+@Injectable({
+  providedIn: "root"
+})
 export class ParserInitializer {
   parser: LocalizeParser;
   routes: Routes;
 
-  /**
-   * CTOR
-   */
   constructor(private injector: Injector) {
   }
 
@@ -58,7 +49,7 @@ export class ParserInitializer {
     return res.then(() => {
       const localize = this.injector.get(LocalizeRouterService);
       const router = this.injector.get(Router);
-      const settings = this.injector.get(LocalizeRouterSettings);
+      const settings: LocalizeRouterConfig = this.injector.get(LOCALIZE_ROUTER_CONFIG);
 
       localize.init();
 
@@ -98,48 +89,55 @@ export function getAppInitializer(p: ParserInitializer, parser: LocalizeParser, 
   return p.generateInitializer(parser, routesCopy).bind(p);
 }
 
+export const defaultProviders: Provider[] = [
+  {
+    provide: LocalizeParser,
+    useClass: DefaultLocalizeParser,
+    deps: [TranslocoService, Location, LOCALIZE_ROUTER_CONFIG]
+  }
+]
+
 @NgModule({
   imports: [CommonModule, RouterModule, TranslocoModule],
   declarations: [LocalizeRouterPipe],
-  exports: [LocalizeRouterPipe]
+  exports: [LocalizeRouterPipe],
+  providers: [
+    defaultProviders
+  ]
 })
 export class LocalizeRouterModule {
-  static forRoot(routes: Routes, config: LocalizeRouterConfig = {}): ModuleWithProviders<LocalizeRouterModule> {
+  static forRoot(routes: Routes): ModuleWithProviders<LocalizeRouterModule> {
     return {
       ngModule: LocalizeRouterModule,
       providers: [
         {
-          provide: Router,
-          useFactory: setupRouter,
-          deps: [
-            ApplicationRef, UrlSerializer, ChildrenOutletContexts, Location, Injector,
-            NgModuleFactoryLoader, Compiler, ROUTES, LocalizeParser, ROUTER_CONFIGURATION,
-            [UrlHandlingStrategy, new Optional()], [RouteReuseStrategy, new Optional()]
-          ]
+          provide: RAW_ROUTES,
+          multi: true,
+          useValue: routes
         },
         {
           provide: LOCALIZE_ROUTER_FORROOT_GUARD,
           useFactory: provideForRootGuard,
           deps: [[LocalizeRouterModule, new Optional(), new SkipSelf()]]
         },
-        {provide: TRANSLATE_ROUTE, useValue: config.translateRoute},
-        {provide: USE_CACHED_LANG, useValue: config.useCachedLang},
-        {provide: ALWAYS_SET_PREFIX, useValue: config.alwaysSetPrefix},
-        {provide: CACHE_NAME, useValue: config.cacheName},
-        {provide: CACHE_MECHANISM, useValue: config.cacheMechanism},
-        {provide: DEFAULT_LANG_FUNCTION, useValue: config.defaultLangFunction},
-        {provide: COOKIE_FORMAT, useValue: config.cookieFormat},
-        {provide: INITIAL_NAVIGATION, useValue: config.initialNavigation},
-        LocalizeRouterSettings,
-        config.parser || {provide: LocalizeParser, useClass: DummyLocalizeParser},
         {
-          provide: RAW_ROUTES,
-          multi: true,
-          useValue: routes
+          provide: Router,
+          useFactory: setupRouter,
+          deps: [
+            ApplicationRef,
+            UrlSerializer,
+            ChildrenOutletContexts,
+            Location,
+            Injector,
+            NgModuleFactoryLoader,
+            Compiler,
+            ROUTES,
+            LocalizeParser,
+            ROUTER_CONFIGURATION,
+            [UrlHandlingStrategy, new Optional()],
+            [RouteReuseStrategy, new Optional()]
+          ]
         },
-        LocalizeRouterService,
-        ParserInitializer,
-        // { provide: NgModuleFactoryLoader, useClass: LocalizeRouterConfigLoader },
         {
           provide: APP_INITIALIZER,
           multi: true,

@@ -1,22 +1,23 @@
 ﻿import {Inject, Injectable} from '@angular/core';
-// import { Location } from '@angular/common';
 import {
   Router, NavigationStart, ActivatedRouteSnapshot, NavigationExtras, ActivatedRoute,
   Event, NavigationCancel, Routes
 } from '@angular/router';
-import { Subject, Observable, ReplaySubject } from 'rxjs';
-import { filter, pairwise } from 'rxjs/operators';
+import {Subject, Observable, ReplaySubject} from 'rxjs';
+import {filter, pairwise} from 'rxjs/operators';
 
-import { LocalizeParser } from './localize-router.parser';
-import {LocalizeRouterSettings} from './localize-router.config';
-import { LocalizedMatcherUrlSegment } from './localized-matcher-url-segment';
-import { deepCopy } from './util';
+import {LocalizeParser} from './localize-router.parser';
+import {LOCALIZE_ROUTER_CONFIG, LocalizeRouterConfig} from './localize-router.config';
+import {LocalizedMatcherUrlSegment} from './localized-matcher-url-segment';
+import {deepCopy} from './util';
 
 /**
  * Localization service
  * modifyRoutes
  */
-@Injectable()
+@Injectable({
+  providedIn: "root"
+})
 export class LocalizeRouterService {
   routerEvents: Subject<string>;
   hooks: {
@@ -33,10 +34,9 @@ export class LocalizeRouterService {
    */
   constructor(
     @Inject(LocalizeParser) public parser: LocalizeParser,
-    @Inject(LocalizeRouterSettings) public settings: LocalizeRouterSettings,
+    @Inject(LOCALIZE_ROUTER_CONFIG) public settings: LocalizeRouterConfig,
     @Inject(Router) private router: Router,
     @Inject(ActivatedRoute) private route: ActivatedRoute
-    /*@Inject(Location) private location: Location*/
   ) {
     this.routerEvents = new Subject<string>();
     const initializedSubject = new ReplaySubject<boolean>(1);
@@ -73,7 +73,6 @@ export class LocalizeRouterService {
     // }
     if (lang !== this.parser.currentLang) {
       const rootSnapshot: ActivatedRouteSnapshot = this.router.routerState.snapshot.root;
-
       this.parser.translateRoutes(lang).subscribe(() => {
 
         let url = this.traverseRouteSnapshot(rootSnapshot);
@@ -131,7 +130,6 @@ export class LocalizeRouterService {
    * Traverses through the tree to assemble new translated url
    */
   private traverseRouteSnapshot(snapshot: ActivatedRouteSnapshot): string {
-
     if (snapshot.firstChild && snapshot.routeConfig) {
       return `${this.parseSegmentValue(snapshot)}/${this.traverseRouteSnapshot(snapshot.firstChild)}`;
     } else if (snapshot.firstChild) {
@@ -186,7 +184,7 @@ export class LocalizeRouterService {
   }
 
   private parseSegmentValueMatcher(snapshot: ActivatedRouteSnapshot): string[] {
-    const localizeMatcherParams = snapshot.data && snapshot.data.localizeMatcher && snapshot.data.localizeMatcher.params || { };
+    const localizeMatcherParams = snapshot.data && snapshot.data.localizeMatcher && snapshot.data.localizeMatcher.params || {};
     const subPathSegments: string[] = snapshot.url
       .map((segment: LocalizedMatcherUrlSegment) => {
         const currentPath = segment.path;
