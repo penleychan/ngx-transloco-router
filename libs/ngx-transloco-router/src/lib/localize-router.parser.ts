@@ -88,6 +88,9 @@ export abstract class LocalizeParser {
     selectedLanguage = locationLang || this.defaultLang;
     this.translate.setDefaultLang(this.defaultLang);
 
+    // set language on initialize
+    this.translate.setActiveLang(selectedLanguage)
+
     let children: Routes = [];
     /** if set prefix is enforced */
     if (this.settings.alwaysSetPrefix) {
