@@ -25,7 +25,8 @@
     "update": "nx migrate latest",
     "workspace-generator": "nx workspace-generator",
     "dep-graph": "nx dep-graph",
-    "help": "nx help"
+    "help": "nx help",
+    "publish_lib": "nx build ngx-transloco-router --prod && cd dist && cd libs && cd ngx-transloco-router && npm pack && npm publish && cd ../../.."
   },
   "private": false,
   "dependencies": {

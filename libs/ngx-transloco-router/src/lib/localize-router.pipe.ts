@@ -44,7 +44,7 @@ export class LocalizeRouterPipe implements PipeTransform, OnDestroy {
     this.lastLanguage = this.localize.parser.currentLang;
 
     /** translate key and update values */
-    this.value = `${this.localize.translateRoute(query)}`;
+    this.value = this.localize.translateRoute(query);
     this.lastKey = query;
     // if view is already destroyed, ignore firing change detection
     const view = (this._ref as any)._view;

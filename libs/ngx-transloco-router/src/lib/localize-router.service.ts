@@ -219,7 +219,6 @@ export class LocalizeRouterService {
         result.push(segment);
       }
     });
-
     return result;
   }
 
