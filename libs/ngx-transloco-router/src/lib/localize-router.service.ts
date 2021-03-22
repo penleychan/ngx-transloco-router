@@ -78,7 +78,7 @@ export class LocalizeRouterService {
         let url = this.traverseRouteSnapshot(rootSnapshot);
         url = this.translateRoute(url) as string;
 
-        if (!this.settings.alwaysSetPrefix) {
+        if (this.settings.alwaysSetPrefix) {
           let urlSegments = url.split('/');
           const languageSegmentIndex = urlSegments.indexOf(this.parser.currentLang);
           // If the default language has no prefix make sure to remove and add it when necessary

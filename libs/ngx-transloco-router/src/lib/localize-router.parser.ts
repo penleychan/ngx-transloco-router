@@ -158,9 +158,7 @@ export abstract class LocalizeParser {
         this.currentLang = language;
 
         if (this._languageRoute) {
-          if (this._languageRoute) {
-            this._translateRouteTree(this._languageRoute.children);
-          }
+          this._translateRouteTree(this._languageRoute.children);
           // if there is wildcard route
           if (this._wildcardRoute && this._wildcardRoute.redirectTo) {
             this._translateProperty(this._wildcardRoute, 'redirectTo', true);
