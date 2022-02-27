@@ -79,26 +79,9 @@ export function deepCopy<t>(object: t): t {
   return output as t;
 }
 
-// export function flatten(data) {
-//   var result = {};
-//   function recurse (cur, prop) {
-//     if (Object(cur) !== cur) {
-//       result[prop] = cur;
-//     } else if (Array.isArray(cur)) {
-//       for(var i=0, l=cur.length; i<l; i++)
-//         recurse(cur[i], prop + "[" + i + "]");
-//       if (l == 0)
-//         result[prop] = [];
-//     } else {
-//       var isEmpty = true;
-//       for (var p in cur) {
-//         isEmpty = false;
-//         recurse(cur[p], prop ? prop+"."+p : p);
-//       }
-//       if (isEmpty && prop)
-//         result[prop] = {};
-//     }
-//   }
-//   recurse(data, "");
-//   return result;
-// }
+export function flatten<T>(list: Array<T|T[]>): T[] {
+  return list.reduce((flat: any[], item: T|T[]): T[] => {
+    const flatItem = Array.isArray(item) ? flatten(item) : item;
+    return (<T[]>flat).concat(flatItem);
+  }, []);
+}

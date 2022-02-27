@@ -23,7 +23,6 @@ export abstract class LocalizeParser {
   currentLang: string;
   routes: Routes;
   defaultLang: string;
-  scope: string;
 
   protected prefix: string;
   protected escapePrefix: string;

@@ -5,7 +5,6 @@ import {
   Injector,
   ModuleWithProviders,
   NgModule,
-  NgModuleFactoryLoader,
   SkipSelf,
   Optional, Provider,
 } from '@angular/core';
@@ -129,7 +128,6 @@ export class LocalizeRouterModule {
             ChildrenOutletContexts,
             Location,
             Injector,
-            NgModuleFactoryLoader,
             Compiler,
             ROUTES,
             LocalizeParser,

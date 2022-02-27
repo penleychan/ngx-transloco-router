@@ -68,9 +68,6 @@ export class LocalizeRouterService {
    * Change language and navigate to translated route
    */
   changeLanguage(lang: string, extras?: NavigationExtras, useNavigateMethod?: boolean): void {
-    // if (this.route) {
-    //   console.log(this.route);
-    // }
     if (lang !== this.parser.currentLang) {
       const rootSnapshot: ActivatedRouteSnapshot = this.router.routerState.snapshot.root;
       this.parser.translateRoutes(lang).subscribe(() => {

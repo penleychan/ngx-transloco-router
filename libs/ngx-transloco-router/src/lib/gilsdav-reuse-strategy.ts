@@ -34,7 +34,7 @@ export class GilsdavReuseStrategy implements RouteReuseStrategy {
   private getKey(route: ActivatedRouteSnapshot) {
     // console.log(route.parent.component.toString());
     if (route.firstChild && route.firstChild.routeConfig && route.firstChild.routeConfig.path &&
-        route.firstChild.routeConfig.path.indexOf('**') !== -1) { // WildCard
+      route.firstChild.routeConfig.path.indexOf('**') !== -1) { // WildCard
       return 'WILDCARD';
     } else if (!route.data.localizeRouter && (!route.parent || !route.parent.parent) && !route.data.skipRouteLocalization) { // Lang route
       return 'LANG';
