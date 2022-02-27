@@ -1,14 +1,17 @@
 {
-  "implicitDependencies": {
-    "angular.json": "*",
-    "package.json": { "dependencies": "*", "devDependencies": "*" },
-    "tsconfig.base.json": "*",
-    "tslint.json": "*",
-    ".eslintrc.json": "*",
-    "nx.json": "*"
-  },
-  "affected": { "defaultBase": "master" },
   "npmScope": "penleychan",
+  "affected": { "defaultBase": "master" },
+  "cli": {
+    "defaultCollection": "@nrwl/angular",
+    "packageManager": "npm"
+  },
+  "implicitDependencies": {
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
+    ".eslintrc.json": "*"
+  },
   "tasksRunnerOptions": {
     "default": {
       "runner": "@nrwl/nx-cloud",
@@ -20,12 +23,27 @@
       }
     }
   },
-  "projects": {
-    "ngx-transloco-route-demo": { "tags": [] },
-    "ngx-transloco-route-demo-e2e": {
-      "tags": [],
-      "implicitDependencies": ["ngx-transloco-route-demo"]
+  "targetDependencies": {
+    "build": [
+      {
+        "target": "build",
+        "projects": "dependencies"
+      }
+    ]
+  },
+  "generators": {
+    "@nrwl/angular:application": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
     },
-    "ngx-transloco-router": { "tags": [] }
+    "@nrwl/angular:library": {
+      "linter": "eslint",
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {
+      "style": "scss"
+    }
   }
 }
