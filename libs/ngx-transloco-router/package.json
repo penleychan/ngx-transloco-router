@@ -1,6 +1,6 @@
 {
   "name": "@penleychan/ngx-transloco-router",
-  "version": "1.0.1",
+  "version": "1.1.1",
   "private": false,
   "description": "Routing Localization extension for transloco",
   "keywords": ["transloco", "localization", "angular"],
@@ -9,7 +9,7 @@
   "peerDependencies": {
     "@angular/common": "^13.0.0",
     "@angular/core": "^13.0.0",
-    "@ngneat/transloco": "^3.1.0"
+    "@ngneat/transloco": "^3.1.0 || ^4.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.1"
