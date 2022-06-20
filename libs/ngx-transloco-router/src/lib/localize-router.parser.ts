@@ -82,7 +82,7 @@ export abstract class LocalizeParser {
     if (this.settings.defaultLangFunction) {
       this.defaultLang = this.settings.defaultLangFunction(this.locales, this._cachedLang, browserLang);
     } else {
-      this.defaultLang = this._cachedLang || browserLang || this.locales[0].toString();
+      this.defaultLang = this._cachedLang || this.translate.getDefaultLang() || browserLang || this.locales[0].toString();
     }
     selectedLanguage = locationLang || this.defaultLang;
     this.translate.setDefaultLang(this.defaultLang);
