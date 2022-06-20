@@ -93,7 +93,7 @@ export abstract class LocalizeParser {
     let children: Routes = [];
     /** if set prefix is enforced */
     if (this.settings.alwaysSetPrefix) {
-      const baseRoute = {path: '', redirectTo: this.defaultLang, pathMatch: 'full'};
+      const baseRoute: Route = {path: '', redirectTo: this.defaultLang, pathMatch: 'full'};
 
       /** extract potential wildcard route */
       const wildcardIndex = routes.findIndex((route: Route) => route.path === '**');
