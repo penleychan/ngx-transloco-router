@@ -1,5 +1,5 @@
 ﻿import {Routes, Route, NavigationExtras, Params} from '@angular/router';
-import {Observable, Observer, of} from 'rxjs';
+import {firstValueFrom, Observable, Observer, of} from 'rxjs';
 import {Location} from '@angular/common';
 import {
   CacheMechanism,
@@ -86,9 +86,8 @@ export abstract class LocalizeParser {
     }
     selectedLanguage = locationLang || this.defaultLang;
     this.translate.setDefaultLang(this.defaultLang);
-
     // set language on initialize
-    this.translate.setActiveLang(selectedLanguage)
+    this.translate.setActiveLang(selectedLanguage);
 
     let children: Routes = [];
     /** if set prefix is enforced */
@@ -133,8 +132,9 @@ export abstract class LocalizeParser {
     }
 
     /** translate routes */
-    const res = this.translateRoutes(selectedLanguage);
-    return res.toPromise();
+    return firstValueFrom(
+      this.translateRoutes(selectedLanguage)
+    );
   }
 
   initChildRoutes(routes: Routes) {
@@ -157,15 +157,13 @@ export abstract class LocalizeParser {
         this.currentLang = language;
 
         if (this._languageRoute) {
-          if (this._languageRoute) {
-            this._translateRouteTree(this._languageRoute.children);
-          }
+          this._translateRouteTree(this._languageRoute.children, true);
           // if there is wildcard route
           if (this._wildcardRoute && this._wildcardRoute.redirectTo) {
             this._translateProperty(this._wildcardRoute, 'redirectTo', true);
           }
         } else {
-          this._translateRouteTree(this.routes);
+          this._translateRouteTree(this.routes, true);
         }
 
         observer.next(void 0);
@@ -177,25 +175,28 @@ export abstract class LocalizeParser {
   /**
    * Translate the route node and recursively call for all it's children
    */
-  private _translateRouteTree(routes: Routes): void {
+  private _translateRouteTree(routes: Routes, isRootTree?: boolean): void {
     routes.forEach((route: Route) => {
       const skipRouteLocalization = (route.data && route.data['skipRouteLocalization']);
       const localizeRedirection = !skipRouteLocalization || skipRouteLocalization['localizeRedirectTo'];
 
       if (route.redirectTo && localizeRedirection) {
-        this._translateProperty(route, 'redirectTo', !route.redirectTo.indexOf('/'));
+        const prefixLang = route.redirectTo.indexOf('/') === 0 || isRootTree;
+        this._translateProperty(route, 'redirectTo', prefixLang);
       }
 
-      if (!skipRouteLocalization) {
-        if (route.path !== null && route.path !== undefined/* && route.path !== '**'*/) {
-          this._translateProperty(route, 'path');
-        }
-        if (route.children) {
-          this._translateRouteTree(route.children);
-        }
-        if (route.loadChildren && (<any>route)._loadedConfig) {
-          this._translateRouteTree((<any>route)._loadedConfig.routes);
-        }
+      if (skipRouteLocalization) {
+        return;
+      }
+
+      if (route.path !== null && route.path !== undefined/* && route.path !== '**'*/) {
+        this._translateProperty(route, 'path');
+      }
+      if (route.children) {
+        this._translateRouteTree(route.children);
+      }
+      if (route.loadChildren && (<any>route)._loadedRoutes?.length) {
+        this._translateRouteTree((<any>route)._loadedRoutes);
       }
     });
   }
@@ -230,13 +231,26 @@ export abstract class LocalizeParser {
    * Add current lang as prefix to given url.
    */
   addPrefixToUrl(url: string): string {
-    const plitedUrl = url.split('?');
-    plitedUrl[0] = plitedUrl[0].replace(/\/$/, '');
-    return `/${this.urlPrefix}${plitedUrl.join('?')}`;
+    const splitUrl = url.split('?');
+    const isRootPath = splitUrl[0].length === 1 && splitUrl[0] === '/';
+
+    splitUrl[0] = splitUrl[0].replace(/\/$/, '');
+
+    const joinedUrl = splitUrl.join('?');
+
+    if (this.urlPrefix === '') {
+      return joinedUrl;
+    }
+
+    if (!joinedUrl.startsWith('/') && !isRootPath) {
+      return `${this.urlPrefix}/${joinedUrl}`;
+    }
+
+    return `/${this.urlPrefix}${joinedUrl}`;
   }
 
   /**
-   * TODO: Translate route and return observable
+   * Translate route and return observable
    */
   translateRoute(path: string): string {
     const queryParts = path.split('?');
@@ -287,6 +301,9 @@ export abstract class LocalizeParser {
     if (this.settings.cacheMechanism === CacheMechanism.LocalStorage) {
       return this._cacheWithLocalStorage();
     }
+    if (this.settings.cacheMechanism === CacheMechanism.SessionStorage) {
+      return this._cacheWithSessionStorage();
+    }
     if (this.settings.cacheMechanism === CacheMechanism.Cookie) {
       return this._cacheWithCookies();
     }
@@ -301,6 +318,9 @@ export abstract class LocalizeParser {
     }
     if (this.settings.cacheMechanism === CacheMechanism.LocalStorage) {
       this._cacheWithLocalStorage(value);
+    }
+    if (this.settings.cacheMechanism === CacheMechanism.SessionStorage) {
+      this._cacheWithSessionStorage(value);
     }
     if (this.settings.cacheMechanism === CacheMechanism.Cookie) {
       this._cacheWithCookies(value);
@@ -322,6 +342,24 @@ export abstract class LocalizeParser {
       return this._returnIfInLocales(window.localStorage.getItem(this.settings.cacheName));
     } catch (e) {
       // weird Safari issue in private mode, where LocalStorage is defined but throws error on access
+      return;
+    }
+  }
+
+  /**
+   * Cache value to session storage
+   */
+  private _cacheWithSessionStorage(value?: string): string {
+    try {
+      if (typeof window === 'undefined' || typeof window.sessionStorage === 'undefined') {
+        return;
+      }
+      if (value) {
+        window.sessionStorage.setItem(this.settings.cacheName, value);
+        return;
+      }
+      return this._returnIfInLocales(window.sessionStorage.getItem(this.settings.cacheName));
+    } catch (e) {
       return;
     }
   }
@@ -368,7 +406,7 @@ export abstract class LocalizeParser {
   }
 
   /**
-   * TODO: Get translated value
+   * Get translated value
    */
   private translateText(key: string): string {
     if (this.escapePrefix && key.startsWith(this.escapePrefix)) {

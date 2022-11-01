@@ -1,6 +1,17 @@
 ﻿import {
-  Router, UrlSerializer, ChildrenOutletContexts, Routes,
-  Route, ExtraOptions, UrlHandlingStrategy, RouteReuseStrategy, RouterEvent, LoadChildren, ROUTES
+  Router,
+  UrlSerializer,
+  ChildrenOutletContexts,
+  Routes,
+  Route,
+  ExtraOptions,
+  UrlHandlingStrategy,
+  RouteReuseStrategy,
+  RouterEvent,
+  LoadChildren,
+  ROUTES,
+  DefaultTitleStrategy,
+  TitleStrategy
 } from '@angular/router';
 import { Type, Injector, Compiler, ApplicationRef, NgModuleFactory, PLATFORM_ID } from '@angular/core';
 import {Location, isPlatformBrowser} from '@angular/common';
@@ -36,14 +47,17 @@ export class LocalizedRouter extends Router {
           compiled = from(compiler.compileModuleAsync(t)) as Observable<NgModuleFactory<any>>;
         }
         return compiled.pipe(map(factory => {
+          if (Array.isArray(factory)) {
+            return factory;
+          }
           return {
             moduleType: factory.moduleType,
             create: (parentInjector: Injector) => {
               const module = factory.create(parentInjector);
               const getMethod = module.injector.get.bind(module.injector);
 
-              module.injector['get'] = (token: any, notFoundValue: any) => {
-                const getResult = getMethod(token, notFoundValue);
+              module.injector['get'] = (token: any, notFoundValue: any, flags?: any) => {
+                const getResult = getMethod(token, notFoundValue, flags);
 
                 if (token === ROUTES) {
                   // translate lazy routes
@@ -72,6 +86,8 @@ export function setupRouter(
   config: Route[][],
   localize: LocalizeParser,
   opts: ExtraOptions = {},
+  defaultTitleStrategy: DefaultTitleStrategy,
+  titleStrategy?: TitleStrategy,
   urlHandlingStrategy?: UrlHandlingStrategy,
   routeReuseStrategy?: RouteReuseStrategy
 ) {
@@ -85,6 +101,8 @@ export function setupRouter(
   if (routeReuseStrategy) {
     router.routeReuseStrategy = routeReuseStrategy;
   }
+
+  router.titleStrategy = titleStrategy ?? defaultTitleStrategy;
 
   if (opts.errorHandler) {
     router.errorHandler = opts.errorHandler;

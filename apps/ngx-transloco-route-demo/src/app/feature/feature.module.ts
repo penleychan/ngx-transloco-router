@@ -17,8 +17,13 @@ const routes: Routes = [
         path: 'test/:id',
         component: TestComponent
       }
-    ]
+    ],
   },
+  {
+    path: 'registration',
+    loadChildren: () =>
+      import('./registration/registration.module').then((mod) => mod.RegistrationModule)
+  }
 ];
 
 @NgModule({

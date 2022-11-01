@@ -11,12 +11,12 @@ import {
 import {CommonModule, Location} from '@angular/common';
 import {DefaultLocalizeParser, LocalizeParser} from "./localize-router.parser";
 import {
-  ChildrenOutletContexts,
+  ChildrenOutletContexts, DefaultTitleStrategy,
   Router,
   ROUTER_CONFIGURATION,
   RouteReuseStrategy, RouterModule,
   ROUTES,
-  Routes, UrlHandlingStrategy,
+  Routes, TitleStrategy, UrlHandlingStrategy,
   UrlSerializer
 } from "@angular/router";
 import {LocalizeRouterService} from "./localize-router.service";
@@ -32,9 +32,7 @@ import {setupRouter} from "./localized-router";
 import {TranslocoModule, TranslocoService} from "@ngneat/transloco";
 import {LocalizeRouterPipe} from "./localize-router.pipe";
 
-@Injectable({
-  providedIn: "root"
-})
+@Injectable()
 export class ParserInitializer {
   parser: LocalizeParser;
   routes: Routes;
@@ -110,16 +108,6 @@ export class LocalizeRouterModule {
       ngModule: LocalizeRouterModule,
       providers: [
         {
-          provide: RAW_ROUTES,
-          multi: true,
-          useValue: routes
-        },
-        {
-          provide: LOCALIZE_ROUTER_FORROOT_GUARD,
-          useFactory: provideForRootGuard,
-          deps: [[LocalizeRouterModule, new Optional(), new SkipSelf()]]
-        },
-        {
           provide: Router,
           useFactory: setupRouter,
           deps: [
@@ -132,10 +120,24 @@ export class LocalizeRouterModule {
             ROUTES,
             LocalizeParser,
             ROUTER_CONFIGURATION,
+            DefaultTitleStrategy,
+            [TitleStrategy, new Optional()],
             [UrlHandlingStrategy, new Optional()],
             [RouteReuseStrategy, new Optional()]
           ]
         },
+        {
+          provide: LOCALIZE_ROUTER_FORROOT_GUARD,
+          useFactory: provideForRootGuard,
+          deps: [[LocalizeRouterModule, new Optional(), new SkipSelf()]]
+        },
+        {
+          provide: RAW_ROUTES,
+          multi: true,
+          useValue: routes
+        },
+        LocalizeRouterService,
+        ParserInitializer,
         {
           provide: APP_INITIALIZER,
           multi: true,

@@ -7,11 +7,17 @@ import {
   localizeRouterConfig,
 } from '../../../../libs/ngx-transloco-router/src/lib/localize-router.config';
 import { LocalizeRouterModule } from '@penleychan/ngx-transloco-router';
+import {AppComponent} from "./app.component";
 
 const routes: Routes = [
   {
+    path: '',
+    component: AppComponent,
+  },
+  {
     path: 'greetings',
     component: GreetingsComponent,
+    title: 'TEST',
     data: {
       skipRouteLocalization: false,
     },
@@ -26,8 +32,8 @@ const routes: Routes = [
     loadChildren: () =>
       import('./core/core.module').then((mod) => mod.CoreModule),
   },
-  { path: '404', component: NotFoundComponent },
-  { path: '**', redirectTo: '/404' },
+  // { path: '404', component: NotFoundComponent },
+  // { path: '**', redirectTo: '/404' },
 ];
 
 @NgModule({
@@ -37,7 +43,7 @@ const routes: Routes = [
     {
       provide: LOCALIZE_ROUTER_CONFIG,
       useValue: localizeRouterConfig({
-        translateRoute: true,
+        translateRoute: false,
       }),
     },
   ],
