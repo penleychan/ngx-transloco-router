@@ -11,66 +11,95 @@
   LoadChildren,
   ROUTES,
   DefaultTitleStrategy,
-  TitleStrategy
+  TitleStrategy,
 } from '@angular/router';
-import { Type, Injector, Compiler, ApplicationRef, NgModuleFactory, PLATFORM_ID } from '@angular/core';
-import {Location, isPlatformBrowser} from '@angular/common';
-import {ɵgetDOM as getDOM} from '@angular/platform-browser';
-import {from, of, isObservable, Observable} from 'rxjs';
-import {mergeMap, map} from 'rxjs/operators';
-import {flatten, isPromise} from './util';
-import {LocalizeParser} from './localize-router.parser';
+import {
+  Type,
+  Injector,
+  Compiler,
+  ApplicationRef,
+  NgModuleFactory,
+  PLATFORM_ID,
+} from '@angular/core';
+import { Location, isPlatformBrowser } from '@angular/common';
+import { from, of, isObservable, Observable } from 'rxjs';
+import { mergeMap, map } from 'rxjs/operators';
+import { flatten, isPromise } from './util';
+import { LocalizeParser } from './localize-router.parser';
 
 export class LocalizedRouter extends Router {
   constructor(
     _rootComponentType: Type<any> | null,
     _urlSerializer: UrlSerializer,
     _rootContexts: ChildrenOutletContexts,
-    _location: Location, injector: Injector,
+    _location: Location,
+    injector: Injector,
     compiler: Compiler,
     public config: Routes,
     private localize: LocalizeParser
   ) {
-    super(_rootComponentType, _urlSerializer, _rootContexts, _location, injector, compiler, config);
+    super(
+      _rootComponentType,
+      _urlSerializer,
+      _rootContexts,
+      _location,
+      injector,
+      compiler,
+      config
+    );
     // Custom configuration
     const platformId = injector.get(PLATFORM_ID);
     const isBrowser = isPlatformBrowser(platformId);
     // __proto__ is needed for preloaded modules be doesn't work with SSR
-    // @ts-ignore
-    const configLoader = isBrowser ? this.configLoader.__proto__ : this.configLoader;
-    configLoader.loadModuleFactory = (loadChildren: LoadChildren) => {
-      return wrapIntoObservable(loadChildren()).pipe(mergeMap((t: any) => {
-        let compiled: Observable<NgModuleFactory<any>>;
-        if (t instanceof NgModuleFactory) {
-          compiled = of(t);
-        } else {
-          compiled = from(compiler.compileModuleAsync(t)) as Observable<NgModuleFactory<any>>;
-        }
-        return compiled.pipe(map(factory => {
-          if (Array.isArray(factory)) {
-            return factory;
+    const configLoader = isBrowser
+      ? // @ts-ignore
+        this.configLoader.__proto__
+      : // @ts-ignore
+        this.configLoader;
+
+    configLoader.loadModuleFactoryOrRoutes = (loadChildren: LoadChildren) => {
+      return wrapIntoObservable(loadChildren()).pipe(
+        mergeMap((t: any) => {
+          let compiled: Observable<NgModuleFactory<any> | Array<any>>;
+          if (t instanceof NgModuleFactory || Array.isArray(t)) {
+            compiled = of(t);
+          } else {
+            compiled = from(compiler.compileModuleAsync(t)) as Observable<
+              NgModuleFactory<any>
+            >;
           }
-          return {
-            moduleType: factory.moduleType,
-            create: (parentInjector: Injector) => {
-              const module = factory.create(parentInjector);
-              const getMethod = module.injector.get.bind(module.injector);
+          return compiled.pipe(
+            map((factory) => {
+              if (Array.isArray(factory)) {
+                return factory;
+              }
+              return {
+                moduleType: factory.moduleType,
+                create: (parentInjector: Injector) => {
+                  const module = factory.create(parentInjector);
+                  const getMethod = module.injector.get.bind(module.injector);
 
-              module.injector['get'] = (token: any, notFoundValue: any, flags?: any) => {
-                const getResult = getMethod(token, notFoundValue, flags);
+                  module.injector['get'] = (
+                    token: any,
+                    notFoundValue: any,
+                    flags?: any
+                  ) => {
+                    const getResult = getMethod(token, notFoundValue, flags);
 
-                if (token === ROUTES) {
-                  // translate lazy routes
-                  return localize.initChildRoutes([].concat(...getResult));
-                } else {
-                  return getResult;
-                }
+                    if (token === ROUTES) {
+                      // translate lazy routes
+                      return localize.initChildRoutes([].concat(...getResult));
+                    } else {
+                      return getResult;
+                    }
+                  };
+                  return module;
+                },
               };
-              return module;
-            }
-          };
-        }));
-      }));
+            })
+          );
+        })
+      );
     };
     // (this as any).navigations = (this as any).setupNavigations((this as any).transitions);
   }
@@ -92,7 +121,15 @@ export function setupRouter(
   routeReuseStrategy?: RouteReuseStrategy
 ) {
   const router = new LocalizedRouter(
-    null, urlSerializer, contexts, location, injector, compiler, flatten(config), localize);
+    null,
+    urlSerializer,
+    contexts,
+    location,
+    injector,
+    compiler,
+    flatten(config),
+    localize
+  );
 
   if (urlHandlingStrategy) {
     router.urlHandlingStrategy = urlHandlingStrategy;
@@ -140,7 +177,9 @@ export function setupRouter(
   return router;
 }
 
-export function wrapIntoObservable<T>(value: T | NgModuleFactory<T> | Promise<T> | Observable<T>) {
+export function wrapIntoObservable<T>(
+  value: T | NgModuleFactory<T> | Promise<T> | Observable<T>
+) {
   if (isObservable(value)) {
     return value;
   }

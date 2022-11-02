@@ -1,7 +1,7 @@
 ﻿import {Inject, Injectable} from '@angular/core';
 import {
   Router, NavigationStart, ActivatedRouteSnapshot, NavigationExtras, ActivatedRoute,
-  Event, NavigationCancel, Routes
+  Event, NavigationCancel, Routes, UrlSegment
 } from '@angular/router';
 import {Subject, Observable, ReplaySubject} from 'rxjs';
 import {filter, pairwise} from 'rxjs/operators';
@@ -73,11 +73,11 @@ export class LocalizeRouterService {
 
       this.parser.translateRoutes(lang).subscribe(() => {
 
-        const snapUrl = this.traverseRouteSnapshot(rootSnapshot);
-        console.log('snap', snapUrl)
-        let url = this.translateRoute(snapUrl) as string;
-
-        console.log('fullUrl', url)
+        let url = this.traverseRouteSnapshot(rootSnapshot);
+        if(!url.toString().startsWith('/')) {
+          url = `/${url}`;
+        }
+        url = this.translateRoute(url) as string;
 
         if (!this.settings.alwaysSetPrefix) {
           let urlSegments = url.split('/');
@@ -133,13 +133,10 @@ export class LocalizeRouterService {
    */
   private traverseRouteSnapshot(snapshot: ActivatedRouteSnapshot): string {
     if (snapshot.firstChild && snapshot.routeConfig) {
-      console.log(1, snapshot)
       return `${this.parseSegmentValue(snapshot)}/${this.traverseRouteSnapshot(snapshot.firstChild)}`;
     } else if (snapshot.firstChild) {
-      console.log(2, snapshot)
       return this.traverseRouteSnapshot(snapshot.firstChild);
     } else {
-      console.log(3, snapshot)
       return this.parseSegmentValue(snapshot);
     }
     /* if (snapshot.firstChild && snapshot.firstChild.routeConfig && snapshot.firstChild.routeConfig.path) {
@@ -163,22 +160,14 @@ export class LocalizeRouterService {
    * Extracts new segment value based on routeConfig and url
    */
   private parseSegmentValue(snapshot: ActivatedRouteSnapshot): string {
-
-
     if (snapshot.routeConfig && snapshot.routeConfig.matcher) {
-      console.log('1 - parseSegmentValue', snapshot.routeConfig && snapshot.routeConfig.matcher)
-
       const subPathMatchedSegments = this.parseSegmentValueMatcher(snapshot);
       return this.buildUrlFromSegments(snapshot, subPathMatchedSegments);
     } else if (snapshot.data.localizeRouter) {
-      console.log('2 - parseSegmentValue', snapshot.data.localizeRouter)
-
       const path = snapshot.data.localizeRouter.path;
       const subPathSegments = path.split('/');
       return this.buildUrlFromSegments(snapshot, subPathSegments);
     } else if (snapshot.parent && snapshot.parent.parent) { // Not lang route and no localizeRouter data = excluded path
-      console.log('3 - parseSegmentValue', snapshot.parent && snapshot.parent.parent)
-
       const path = snapshot.routeConfig.path;
       const subPathSegments = path.split('/');
       return this.buildUrlFromSegments(snapshot, subPathSegments);

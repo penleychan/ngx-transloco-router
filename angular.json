@@ -1,37 +1,5 @@
 {
   "version": 1,
-  "cli": {
-    "schematicCollections": [
-      "@nrwl/angular"
-    ]
-  },
-  "schematics": {
-    "@nrwl/angular": {
-      "application": {
-        "linter": "eslint"
-      },
-      "library": {
-        "linter": "eslint"
-      },
-      "storybook-configuration": {
-        "linter": "eslint"
-      }
-    },
-    "@nrwl/angular:application": {
-      "style": "scss",
-      "linter": "eslint",
-      "unitTestRunner": "jest",
-      "e2eTestRunner": "cypress"
-    },
-    "@nrwl/angular:library": {
-      "style": "scss",
-      "linter": "eslint",
-      "unitTestRunner": "jest"
-    },
-    "@nrwl/angular:component": {
-      "style": "scss"
-    }
-  },
   "projects": {
     "ngx-transloco-route-demo": {
       "projectType": "application",
@@ -48,6 +16,7 @@
             "polyfills": "apps/ngx-transloco-route-demo/src/polyfills.ts",
             "tsConfig": "apps/ngx-transloco-route-demo/tsconfig.app.json",
             "aot": true,
+            "optimization": false,
             "assets": [
               "apps/ngx-transloco-route-demo/src/favicon.ico",
               "apps/ngx-transloco-route-demo/src/assets"
@@ -89,11 +58,6 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "ngx-transloco-route-demo:build"
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "ngx-transloco-route-demo:build:production"
-            }
           }
         },
         "extract-i18n": {
@@ -115,7 +79,7 @@
           "builder": "@nrwl/jest:jest",
           "outputs": ["coverage/apps/ngx-transloco-route-demo"],
           "options": {
-            "jestConfig": "apps/ngx-transloco-route-demo/jest.config.js",
+            "jestConfig": "apps/ngx-transloco-route-demo/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -180,7 +144,7 @@
           "builder": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/ngx-transloco-router"],
           "options": {
-            "jestConfig": "libs/ngx-transloco-router/jest.config.js",
+            "jestConfig": "libs/ngx-transloco-router/jest.config.ts",
             "passWithNoTests": true
           }
         }

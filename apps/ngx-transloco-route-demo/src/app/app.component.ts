@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {LocalizeRouterService} from "../../../../libs/ngx-transloco-router/src/lib/localize-router.service";
 
 @Component({
@@ -13,6 +13,6 @@ export class AppComponent {
   }
 
   switchLang(lang: string) {
-      this.localizeRouterService.changeLanguage(lang);
+    this.localizeRouterService.changeLanguage(lang, { replaceUrl: true});
   }
 }

@@ -47,7 +47,6 @@ export class ParserInitializer {
       const localize = this.injector.get(LocalizeRouterService);
       const router = this.injector.get(Router);
       const settings: LocalizeRouterConfig = this.injector.get(LOCALIZE_ROUTER_CONFIG);
-
       localize.init();
 
       if (settings.initialNavigation) {

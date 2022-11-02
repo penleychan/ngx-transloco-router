@@ -1,6 +1,8 @@
 {
   "npmScope": "penleychan",
-  "affected": { "defaultBase": "master" },
+  "affected": {
+    "defaultBase": "master"
+  },
   "cli": {
     "defaultCollection": "@nrwl/angular",
     "packageManager": "npm"
@@ -44,6 +46,17 @@
     },
     "@nrwl/angular:component": {
       "style": "scss"
+    }
+  },
+  "targetDefaults": {
+    "e2e": {
+      "inputs": ["default", "^default"]
+    },
+    "test": {
+      "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"]
+    },
+    "lint": {
+      "inputs": ["default", "{workspaceRoot}/.eslintrc.json"]
     }
   }
 }

@@ -3,9 +3,8 @@
   "ROUTES": {
     "greetings": "greet-fr",
     "child": "child-fr",
-    "test": "test-fr",
     "help": "help-fr",
     "testa": "testa-fr",
-    "step-one": "stepone-fr"
+    "step-one": "step-one-fr"
   }
 }

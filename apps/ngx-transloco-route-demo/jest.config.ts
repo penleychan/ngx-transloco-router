@@ -1,3 +1,4 @@
+/* eslint-disable */
 module.exports = {
   displayName: 'ngx-transloco-route-demo',
   preset: '../../jest.preset.js',
