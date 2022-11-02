@@ -1,10 +1,16 @@
 ﻿{
-  "greetings": "Hello fr",
+  "greetings": "Bonjour",
+  "home": "Accueil",
+  "go_home": "Retourner à l'accueil",
+  "matcher": "Correspondant",
+  "page_not_found": "Page non trouvée",
+  "DEFAULT_TITLE": "Ngx Transloco Router",
+  "HOME_TITLE": "Accueil",
   "ROUTES": {
-    "greetings": "greet-fr",
-    "child": "child-fr",
-    "help": "help-fr",
-    "testa": "testa-fr",
-    "step-one": "step-one-fr"
+    "home": "accueil",
+    "matcher": "correspondant",
+    "test": "testounet",
+    "bob": "bobie",
+    "map": "carte"
   }
 }

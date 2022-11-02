@@ -1,1 +1,38 @@
-<p>home works!</p>
+<ng-container *transloco="let t">
+  <section class="w-full px-6">
+    <div class="my-4 flex justify-center">
+      <h1 class="text-2xl font-semibold">{{t('home')}}</h1>
+    </div>
+
+    <section class="flex flex-col ">
+      <router-outlet></router-outlet>
+    </section>
+  </section>
+
+  <button class="mt-5">
+    <a
+      class="relative inline-block text-sm font-medium text-[#FF6A3D] group active:text-orange-500 focus:outline-none focus:ring"
+    >
+        <span
+          class="absolute inset-0 transition-transform translate-x-0.5 translate-y-0.5 bg-[#FF6A3D] group-hover:translate-y-0 group-hover:translate-x-0"
+        ></span>
+
+      <span class="relative block px-8 py-3 bg-[#1A2238] border border-current">
+          <a href="javascript:void(0)" [routerLink]="['/non-working-link']">Go to 404</a>
+      </span>
+    </a>
+  </button>
+</ng-container>
+
+<!--<a [routerLink]="['/!child'] | localize">Child LazyLoaded</a>-->
+<!--<br>-->
+
+<!--<a [routerLink]="['/!help/testa'] | localize">Help LazyLoaded</a>-->
+<!--<br>-->
+<!--<ng-container *transloco="let t">-->
+<!--  <a [routerLink]="['/greetings'] | localize">{{t('greetings')}}</a>-->
+<!--  <br>-->
+<!--  <a [routerLink]="['/asdf'] | localize">BAD PAGE</a>-->
+<!--</ng-container>-->
+
+<!--<router-outlet></router-outlet>-->

@@ -1,5 +1,5 @@
 ﻿import { Routes, Route, NavigationExtras, Params } from '@angular/router';
-import { firstValueFrom, Observable, Observer, of } from 'rxjs';
+import { firstValueFrom, Observable, Observer } from 'rxjs';
 import { Location } from '@angular/common';
 import {
   CacheMechanism,
@@ -134,7 +134,6 @@ export abstract class LocalizeParser {
     if (children && children.length) {
       if (this.locales.length > 1 || this.settings.alwaysSetPrefix) {
         this._languageRoute = { children: children };
-        console.log(this._languageRoute);
         this.routes.unshift(this._languageRoute);
       }
     }

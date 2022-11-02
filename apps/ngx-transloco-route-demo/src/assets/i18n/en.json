@@ -1,10 +1,16 @@
 ﻿{
-  "greetings": "Hello en",
+  "greetings": "Hello",
+  "home": "Home",
+  "go_home": "Go home",
+  "matcher": "Matcher",
+  "page_not_found": "Page not Found",
+  "DEFAULT_TITLE": "Ngx Transloco Router",
+  "HOME_TITLE": "Home",
   "ROUTES": {
-    "greetings": "greet-en",
-    "child": "child-en",
-    "help": "help-en",
-    "testa": "testa-en",
-    "step-one": "step-one-en"
+    "home": "home",
+    "matcher": "matcher",
+    "test": "mytest",
+    "bob": "george",
+    "map": "map"
   }
 }

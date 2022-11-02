@@ -1,17 +1,57 @@
-<a href="javascript:void(0)" (click)="switchLang('en')">ENG</a>
-<br>
-<a href="javascript:void(0)" (click)="switchLang('fr')">FRA</a>
-<br>
+<nav *transloco="let t" class="flex items-center bg-gray-800 p-3 flex-wrap">
+  <a href="#" class="p-2 mr-4 inline-flex items-center">
+    <span class="text-xl text-white font-bold uppercase tracking-wide"
+    >@PENLEYCHAN/NGX-TRANSLOCO-ROUTER</span
+    >
+  </a>
+  <div
+    class="hidden top-navbar w-full lg:inline-flex lg:flex-grow lg:w-auto"
+    id="navigation"
+  >
+    <div
+      class="lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto w-full lg:items-center items-start  flex flex-col lg:h-auto"
+    >
+      <a
+        href="javascript:void(0)"
+        [routerLink]="['/'] | localize"
+        class="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-gray-900 hover:text-white"
+      >
+        <span>{{t('home')}}</span>
+      </a>
+      <a
+        href="javascript:void(0)"
+        [routerLink]="['/matcher'] | localize"
+        class="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-gray-900 hover:text-white"
+      >
+        <span>{{t('matcher')}}</span>
+      </a>
+      <a
+        href="javascript:void(0)"
+        [routerLink]="['/test', 'bob'] | localize"
+        class="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-gray-900 hover:text-white"
+      >
+        <span>Test</span>
+      </a>
+      <a
+        href="javascript:void(0)"
+        [routerLink]="['/sarah'] | localize"
+        class="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-gray-900 hover:text-white"
+      >
+        <span>Test 2</span>
+      </a>
+      <a
+        href="javascript:void(0)"
+        (click)="switchLang()"
+        class="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-gray-900 hover:text-white"
+      >
+        <span>{{currentLang}}</span>
+      </a>
+    </div>
+  </div>
+</nav>
 
-<a [routerLink]="['/!child'] | localize">Child LazyLoaded</a>
-<br>
+<main>
+  <router-outlet (activate)="routerOutletActivation(true)" (deactivate)="routerOutletActivation(false)"></router-outlet>
+</main>
 
-<a [routerLink]="['/!help/testa'] | localize">Help LazyLoaded</a>
-<br>
-<ng-container *transloco="let t">
-  <a [routerLink]="['/greetings'] | localize">{{t('greetings')}}</a>
-  <br>
-  <a [routerLink]="['/asdf'] | localize">BAD PAGE</a>
-</ng-container>
 
-<router-outlet></router-outlet>
