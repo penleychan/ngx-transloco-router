@@ -1,44 +1,43 @@
 import {
   APP_INITIALIZER,
-  ApplicationRef, Compiler,
   Injectable,
   Injector,
   ModuleWithProviders,
   NgModule,
   SkipSelf,
-  Optional, Provider,
+  Optional,
+  Provider,
 } from '@angular/core';
-import {CommonModule, Location} from '@angular/common';
-import {DefaultLocalizeParser, LocalizeParser} from "./localize-router.parser";
+import { CommonModule, Location } from '@angular/common';
 import {
-  ChildrenOutletContexts, DefaultTitleStrategy,
+  DefaultLocalizeParser,
+  LocalizeParser,
+} from './localize-router.parser';
+import {
   Router,
-  ROUTER_CONFIGURATION,
-  RouteReuseStrategy, RouterModule,
-  ROUTES,
-  Routes, TitleStrategy, UrlHandlingStrategy,
-  UrlSerializer
-} from "@angular/router";
-import {LocalizeRouterService} from "./localize-router.service";
+  RouteReuseStrategy,
+  RouterModule,
+  Routes,
+} from '@angular/router';
+import { LocalizeRouterService } from './localize-router.service';
 import {
   LOCALIZE_ROUTER_CONFIG,
   LOCALIZE_ROUTER_FORROOT_GUARD,
   LocalizeRouterConfig,
   RAW_ROUTES,
-} from "./localize-router.config";
-import {deepCopy} from "./util";
-import {GilsdavReuseStrategy} from "./gilsdav-reuse-strategy";
-import {setupRouter} from "./localized-router";
-import {TranslocoModule, TranslocoService} from "@ngneat/transloco";
-import {LocalizeRouterPipe} from "./localize-router.pipe";
+} from './localize-router.config';
+import { deepCopy } from './util';
+import { GilsdavReuseStrategy } from './gilsdav-reuse-strategy';
+import { LocalizedRouter } from './localized-router';
+import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
+import { LocalizeRouterPipe } from './localize-router.pipe';
 
 @Injectable()
 export class ParserInitializer {
   parser: LocalizeParser;
   routes: Routes;
 
-  constructor(private injector: Injector) {
-  }
+  constructor(private injector: Injector) {}
 
   appInitializer(): Promise<any> {
     const res = this.parser.load(this.routes);
@@ -46,11 +45,13 @@ export class ParserInitializer {
     return res.then(() => {
       const localize = this.injector.get(LocalizeRouterService);
       const router = this.injector.get(Router);
-      const settings: LocalizeRouterConfig = this.injector.get(LOCALIZE_ROUTER_CONFIG);
+      const settings: LocalizeRouterConfig = this.injector.get(
+        LOCALIZE_ROUTER_CONFIG
+      );
       localize.init();
 
       if (settings.initialNavigation) {
-        return new Promise<void>(resolve => {
+        return new Promise<void>((resolve) => {
           // @ts-ignore
           const oldAfterPreactivation = router.hooks.afterPreactivation;
           let firstInit = true;
@@ -72,14 +73,21 @@ export class ParserInitializer {
     });
   }
 
-  generateInitializer(parser: LocalizeParser, routes: Routes[]): () => Promise<any> {
+  generateInitializer(
+    parser: LocalizeParser,
+    routes: Routes[]
+  ): () => Promise<any> {
     this.parser = parser;
     this.routes = routes.reduce((a, b) => a.concat(b));
     return this.appInitializer;
   }
 }
 
-export function getAppInitializer(p: ParserInitializer, parser: LocalizeParser, routes: Routes[]): any {
+export function getAppInitializer(
+  p: ParserInitializer,
+  parser: LocalizeParser,
+  routes: Routes[]
+): any {
   // DeepCopy needed to prevent RAW_ROUTES mutation
   const routesCopy = deepCopy(routes);
   return p.generateInitializer(parser, routesCopy).bind(p);
@@ -89,17 +97,15 @@ export const defaultProviders: Provider[] = [
   {
     provide: LocalizeParser,
     useClass: DefaultLocalizeParser,
-    deps: [TranslocoService, Location, LOCALIZE_ROUTER_CONFIG]
-  }
-]
+    deps: [TranslocoService, Location, LOCALIZE_ROUTER_CONFIG],
+  },
+];
 
 @NgModule({
   imports: [CommonModule, RouterModule, TranslocoModule],
   declarations: [LocalizeRouterPipe],
   exports: [LocalizeRouterPipe],
-  providers: [
-    defaultProviders
-  ]
+  providers: [defaultProviders],
 })
 export class LocalizeRouterModule {
   static forRoot(routes: Routes): ModuleWithProviders<LocalizeRouterModule> {
@@ -108,32 +114,17 @@ export class LocalizeRouterModule {
       providers: [
         {
           provide: Router,
-          useFactory: setupRouter,
-          deps: [
-            ApplicationRef,
-            UrlSerializer,
-            ChildrenOutletContexts,
-            Location,
-            Injector,
-            Compiler,
-            ROUTES,
-            LocalizeParser,
-            ROUTER_CONFIGURATION,
-            DefaultTitleStrategy,
-            [TitleStrategy, new Optional()],
-            [UrlHandlingStrategy, new Optional()],
-            [RouteReuseStrategy, new Optional()]
-          ]
+          useClass: LocalizedRouter,
         },
         {
           provide: LOCALIZE_ROUTER_FORROOT_GUARD,
           useFactory: provideForRootGuard,
-          deps: [[LocalizeRouterModule, new Optional(), new SkipSelf()]]
+          deps: [[LocalizeRouterModule, new Optional(), new SkipSelf()]],
         },
         {
           provide: RAW_ROUTES,
           multi: true,
-          useValue: routes
+          useValue: routes,
         },
         LocalizeRouterService,
         ParserInitializer,
@@ -141,13 +132,13 @@ export class LocalizeRouterModule {
           provide: APP_INITIALIZER,
           multi: true,
           useFactory: getAppInitializer,
-          deps: [ParserInitializer, LocalizeParser, RAW_ROUTES]
+          deps: [ParserInitializer, LocalizeParser, RAW_ROUTES],
         },
         {
           provide: RouteReuseStrategy,
-          useClass: GilsdavReuseStrategy
-        }
-      ]
+          useClass: GilsdavReuseStrategy,
+        },
+      ],
     };
   }
 
@@ -158,17 +149,20 @@ export class LocalizeRouterModule {
         {
           provide: RAW_ROUTES,
           multi: true,
-          useValue: routes
-        }
-      ]
+          useValue: routes,
+        },
+      ],
     };
   }
 }
 
-export function provideForRootGuard(localizeRouterModule: LocalizeRouterModule): string {
+export function provideForRootGuard(
+  localizeRouterModule: LocalizeRouterModule
+): string {
   if (localizeRouterModule) {
     throw new Error(
-      `LocalizeRouterModule.forRoot() called twice. Lazy loaded modules should use LocalizeRouterModule.forChild() instead.`);
+      `LocalizeRouterModule.forRoot() called twice. Lazy loaded modules should use LocalizeRouterModule.forChild() instead.`
+    );
   }
   return 'guarded';
 }
