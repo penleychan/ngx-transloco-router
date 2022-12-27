@@ -98,6 +98,7 @@ export function shouldTranslateMap(param: string): string {
       provide: LOCALIZE_ROUTER_CONFIG,
       useValue: localizeRouterConfig({
         translateRoute: true,
+        initialNavigation: true,
       }),
     },
   ],

@@ -313,7 +313,7 @@ export class LocalizeRouterService {
     (this.router.events as Subject<Event>).next(
       new NavigationCancel(currentNavigation.id, url, '')
     );
-    (this.router as any).navigationTransitions.transition.next({
+    (this.router as any).navigationTransitions.transitions.next({
       ...(this.router as any).navigationTransitions.transitions.getValue(),
       id: 0,
     });

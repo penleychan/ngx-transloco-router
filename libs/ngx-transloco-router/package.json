@@ -1,11 +1,15 @@
 {
   "name": "@penleychan/ngx-transloco-router",
-  "version": "14.0.3",
+  "version": "15.0.0-beta.0",
   "private": false,
   "description": "Routing Localization extension for transloco",
-  "keywords": ["transloco", "localization", "angular"],
+  "keywords": [
+    "transloco",
+    "localization",
+    "angular"
+  ],
   "homepage": "https://github.com/penleychan/ngx-transloco-router",
-  "license" : "MIT",
+  "license": "MIT",
   "peerDependencies": {
     "@angular/common": ">=14.0.0",
     "@angular/core": ">=14.0.0",
