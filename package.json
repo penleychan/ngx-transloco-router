@@ -76,6 +76,7 @@
     "jest-preset-angular": "^12.2.3",
     "ng-packagr": "^15.0.3",
     "postcss": "^8.4.18",
+    "postcss-preset-env": "^7.8.3",
     "prettier": "2.6.2",
     "tailwindcss": "^3.1.8",
     "ts-jest": "28.0.8",
