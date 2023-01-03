@@ -1,0 +1,37 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/ngx-transloco-router/src",
+  "prefix": "app",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/angular:package",
+      "options": {
+        "tsConfig": "libs/ngx-transloco-router/tsconfig.lib.json",
+        "project": "libs/ngx-transloco-router/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/ngx-transloco-router/tsconfig.lib.prod.json"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/ngx-transloco-router/src/**/*.ts",
+          "libs/ngx-transloco-router/src/**/*.html"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/ngx-transloco-router"],
+      "options": {
+        "jestConfig": "libs/ngx-transloco-router/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

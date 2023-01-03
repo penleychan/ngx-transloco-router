@@ -5,6 +5,7 @@ import {
   NgModuleFactory,
   PLATFORM_ID,
   inject,
+  Injectable,
 } from '@angular/core';
 import { Location, isPlatformBrowser } from '@angular/common';
 import { from, of, isObservable, Observable } from 'rxjs';
@@ -12,6 +13,7 @@ import { mergeMap, map } from 'rxjs/operators';
 import { flatten, isPromise } from './util';
 import { LocalizeParser } from './localize-router.parser';
 
+@Injectable({ providedIn: 'root' })
 export class LocalizedRouter extends Router {
   private platformId = inject(PLATFORM_ID);
   private compiler = inject(Compiler);

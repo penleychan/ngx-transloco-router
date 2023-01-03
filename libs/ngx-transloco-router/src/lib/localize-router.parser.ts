@@ -89,8 +89,8 @@ export abstract class LocalizeParser {
       this.defaultLang = this._cachedLang || browserLang || this.locales[0];
     }
     selectedLanguage = locationLang || this.defaultLang;
-    this.translate.setDefaultLang(this.defaultLang);
-    this.translate.setActiveLang(this.defaultLang);
+    this.translate.setDefaultLang(selectedLanguage);
+    this.translate.setActiveLang(selectedLanguage);
 
     let children: Routes = [];
     /** if set prefix is enforced */

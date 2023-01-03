@@ -1,0 +1,84 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/ngx-transloco-route-demo/src",
+  "prefix": "app",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "options": {
+        "outputPath": "dist/apps/ngx-transloco-route-demo",
+        "index": "apps/ngx-transloco-route-demo/src/index.html",
+        "main": "apps/ngx-transloco-route-demo/src/main.ts",
+        "polyfills": "apps/ngx-transloco-route-demo/src/polyfills.ts",
+        "tsConfig": "apps/ngx-transloco-route-demo/tsconfig.app.json",
+        "aot": true,
+        "optimization": false,
+        "assets": [
+          "apps/ngx-transloco-route-demo/src/favicon.ico",
+          "apps/ngx-transloco-route-demo/src/assets"
+        ],
+        "styles": ["apps/ngx-transloco-route-demo/src/styles.scss"],
+        "scripts": []
+      },
+      "configurations": {
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/ngx-transloco-route-demo/src/environments/environment.ts",
+              "with": "apps/ngx-transloco-route-demo/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "options": {
+        "browserTarget": "ngx-transloco-route-demo:build"
+      }
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "ngx-transloco-route-demo:build"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "apps/ngx-transloco-route-demo/src/**/*.ts",
+          "apps/ngx-transloco-route-demo/src/**/*.html"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/ngx-transloco-route-demo"],
+      "options": {
+        "jestConfig": "apps/ngx-transloco-route-demo/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

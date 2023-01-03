@@ -1,8 +1,10 @@
-﻿import { NgModule } from '@angular/core';
+﻿import { Injectable, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { NotFoundComponent } from './not-found/not-found.component';
 import {
   LOCALIZE_ROUTER_CONFIG,
+  LocalizeParser,
+  LocalizeRouterConfig,
   localizeRouterConfig,
 } from '@penleychan/ngx-transloco-router';
 import { LocalizeRouterModule } from '@penleychan/ngx-transloco-router';
@@ -10,6 +12,8 @@ import { LocalizeRouterModule } from '@penleychan/ngx-transloco-router';
 import { HomeComponent } from './home/home.component';
 import { baseMatcher } from './matcher/matcher.module';
 import { detailMatcher } from './matcher/matcher-detail/matcher-detail.module';
+import { TranslocoService } from '@ngneat/transloco';
+import { Location } from '@angular/common';
 
 const routes: Routes = [
   {
@@ -90,6 +94,21 @@ export function shouldTranslateMap(param: string): string {
   return null;
 }
 
+export class DummyLocalizeParser extends LocalizeParser {
+  constructor(
+    private translateService: TranslocoService,
+    private location1: Location,
+    private config1: LocalizeRouterConfig
+  ) {
+    super(translateService, location1, config1);
+  }
+  load(routes: Routes): Promise<any> {
+    return new Promise((resolve: any) => {
+      this.init(routes).then(resolve);
+    });
+  }
+}
+
 @NgModule({
   imports: [RouterModule.forRoot(routes), LocalizeRouterModule.forRoot(routes)],
   exports: [RouterModule, LocalizeRouterModule],
@@ -98,9 +117,16 @@ export function shouldTranslateMap(param: string): string {
       provide: LOCALIZE_ROUTER_CONFIG,
       useValue: localizeRouterConfig({
         translateRoute: true,
-        initialNavigation: true,
       }),
     },
   ],
 })
 export class AppRoutingModule {}
+
+export function DummyFactory(
+  translate: TranslocoService,
+  location: Location,
+  settings: LocalizeRouterConfig
+): DummyLocalizeParser {
+  return new DummyLocalizeParser(translate, location, settings);
+}

@@ -7,6 +7,8 @@ import {
   SkipSelf,
   Optional,
   Provider,
+  Inject,
+  inject,
 } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import {
@@ -93,22 +95,16 @@ export function getAppInitializer(
   return p.generateInitializer(parser, routesCopy).bind(p);
 }
 
-export const defaultProviders: Provider[] = [
-  {
-    provide: LocalizeParser,
-    useClass: DefaultLocalizeParser,
-    deps: [TranslocoService, Location, LOCALIZE_ROUTER_CONFIG],
-  },
-];
-
 @NgModule({
   imports: [CommonModule, RouterModule, TranslocoModule],
   declarations: [LocalizeRouterPipe],
   exports: [LocalizeRouterPipe],
-  providers: [defaultProviders],
 })
 export class LocalizeRouterModule {
-  static forRoot(routes: Routes): ModuleWithProviders<LocalizeRouterModule> {
+  static forRoot(
+    routes: Routes,
+    config: { parser?: Provider } = {}
+  ): ModuleWithProviders<LocalizeRouterModule> {
     return {
       ngModule: LocalizeRouterModule,
       providers: [
@@ -125,6 +121,11 @@ export class LocalizeRouterModule {
           provide: RAW_ROUTES,
           multi: true,
           useValue: routes,
+        },
+        config.parser || {
+          provide: LocalizeParser,
+          useClass: DefaultLocalizeParser,
+          deps: [TranslocoService, Location, LOCALIZE_ROUTER_CONFIG],
         },
         LocalizeRouterService,
         ParserInitializer,
